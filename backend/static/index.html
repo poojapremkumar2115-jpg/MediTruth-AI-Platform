@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediTruth AI - Futuristic Healthcare Fake News Detection</title>
+  
+  <!-- Tailwind CSS play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#030712',
+            cyberCyan: '#00f0ff',
+            cyberPurple: '#bd00ff',
+            cyberGreen: '#10b981',
+            cyberRed: '#f43f5e',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="/css/custom.css">
+  
+  <!-- ChartJS for gorgeous visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-obsidian text-gray-100 min-h-screen relative flex flex-col justify-between">
+
+  <!-- Neural Network background canvas -->
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- Background grid and spotlights -->
+  <div class="neural-grid"></div>
+  <div class="glow-spot-cyan"></div>
+  <div class="glow-spot-purple"></div>
+  <div class="spotlight-cursor"></div>
+
+  <!-- ==========================================
+       HEADER & GLASS NAVBAR
+       ========================================== -->
+  <header class="sticky top-0 z-50 w-full px-6 py-4">
+    <nav class="max-w-7xl mx-auto glass-panel px-6 py-3 flex justify-between items-center border border-white/5 bg-obsidian/45 backdrop-blur-md rounded-2xl">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2 text-xl font-bold tracking-tight text-white nav-link" data-page="home">
+        <span class="p-1.5 rounded-lg bg-gradient-to-tr from-cyberCyan to-cyberPurple flex items-center justify-center shadow-lg shadow-cyberCyan/20">
+          <svg class="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+          </svg>
+        </span>
+        <span class="font-display">Medi<span class="text-gradient font-black">Truth AI</span></span>
+      </a>
+
+      <!-- Desktop Links -->
+      <div class="hidden md:flex items-center gap-8">
+        <a class="nav-link text-sm font-medium tracking-wide active" data-page="home">Home</a>
+        <a class="nav-link text-sm font-medium tracking-wide" data-page="about">About</a>
+        <a class="nav-link text-sm font-medium tracking-wide" data-page="contact">Contact</a>
+        
+        <!-- Logged in state routes -->
+        <a class="nav-link text-sm font-medium tracking-wide btn-trigger-dashboard">Scanner</a>
+        <a class="nav-link text-sm font-medium tracking-wide btn-trigger-dashboard" data-page="analytics">Analytics</a>
+        <a class="nav-link text-sm font-medium tracking-wide btn-trigger-dashboard" data-page="profile">Profile</a>
+        <a class="nav-link text-sm font-medium tracking-wide btn-trigger-dashboard" data-page="admin">Admin</a>
+      </div>
+
+      <!-- Auth Action buttons -->
+      <div class="flex items-center gap-4">
+        <!-- Guest View -->
+        <div id="auth-nav-guest" class="flex items-center gap-3">
+          <a class="nav-link text-xs font-semibold uppercase tracking-wider px-3 py-1.5 cursor-pointer" data-page="login">Log In</a>
+          <button class="btn-neon-cyan !px-4 !py-1.5 !text-xs rounded-lg" data-page="register" onclick="document.querySelector('[data-page=register]').click()">Sign Up</button>
+        </div>
+
+        <!-- Logged In view -->
+        <div id="auth-nav-user" class="hidden items-center gap-3">
+          <div class="flex items-center gap-2 px-3 py-1 rounded-full border border-cyberCyan/20 bg-cyberCyan/5">
+            <span class="w-2 h-2 rounded-full bg-cyberGreen animate-ping"></span>
+            <span class="text-xs font-bold text-gray-300 profile-btn-txt">User</span>
+          </div>
+          <button class="btn-logout text-xs text-red-400 hover:text-red-300 font-semibold uppercase tracking-wider pl-2 cursor-pointer">Sign Out</button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ==========================================
+       MAIN VIEWS SYSTEM (SPA)
+       ========================================== -->
+  <main class="max-w-7xl w-full mx-auto px-6 py-8 flex-grow">
+
+    <!-- PAGE: HOME (LANDING PAGE) -->
+    <section id="page-home" class="py-12">
+      <!-- Hero section -->
+      <div class="text-center max-w-4xl mx-auto mb-20 relative">
+        <span class="px-3 py-1 rounded-full border border-cyberCyan/30 bg-cyberCyan/5 text-xs text-cyberCyan font-bold uppercase tracking-widest inline-block mb-6 shadow-md shadow-cyberCyan/10 animate-pulse">
+          🛡️ Advanced Health Fact Checking
+        </span>
+        <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight leading-none mb-6">
+          Futuristic AI Healthcare <br>
+          <span class="text-gradient">Fake News Detector</span>
+        </h1>
+        <p class="text-lg md:text-xl text-gray-400 font-medium max-w-2xl mx-auto mb-8 font-sans">
+          Verify medical reports, identify pharmaceutical conspiracy theories, and filter out alternative medicine frauds in seconds using advanced clinical NLP.
+        </p>
+
+        <!-- Typewriter Container -->
+        <div class="h-10 mb-8 flex justify-center items-center">
+          <code class="text-sm md:text-base text-cyberCyan font-mono bg-cyberCyan/5 px-4 py-1.5 rounded-lg border border-cyberCyan/10">
+            <span id="typewriter-text"></span><span class="typewriter-cursor"></span>
+          </code>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-4">
+          <button class="btn-neon-cyan btn-trigger-dashboard">
+            🔬 Try Detection Now
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+          </button>
+          <button class="btn-neon-purple" data-page="about" onclick="document.querySelector('[data-page=about]').click()">
+            📘 Learn Methodology
+          </button>
+        </div>
+      </div>
+
+      <!-- Glowing Feature Cards Grid -->
+      <div class="grid md:grid-cols-3 gap-6 mb-24">
+        <div class="glass-panel p-8 glowing-border-trigger">
+          <div class="w-12 h-12 rounded-xl bg-cyberCyan/10 border border-cyberCyan/35 flex items-center justify-center mb-6">
+            <span class="text-2xl">🧠</span>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3">Scikit-Learn Classifier</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            Harnesses custom TF-IDF character and word n-grams vectors trained on 150+ detailed clinical statements and conspiracy theories.
+          </p>
+        </div>
+
+        <div class="glass-panel p-8 glowing-border-trigger">
+          <div class="w-12 h-12 rounded-xl bg-cyberPurple/10 border border-cyberPurple/35 flex items-center justify-center mb-6">
+            <span class="text-2xl">⚡</span>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3">Deep BiLSTM Architecture</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            Constructed with advanced PyTorch recurrent networks featuring bidirectional cell pathways to process medical semantic contexts.
+          </p>
+        </div>
+
+        <div class="glass-panel p-8 glowing-border-trigger">
+          <div class="w-12 h-12 rounded-xl bg-cyberGreen/10 border border-cyberGreen/35 flex items-center justify-center mb-6">
+            <span class="text-2xl">🔍</span>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3">Clinical NLP Highlighter</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            Tokenizes statements and instantly highlights suspicious terminology, pharmaceutical fallacies, or verified medical keywords.
+          </p>
+        </div>
+      </div>
+
+      <!-- Step-by-Step AI Workflow -->
+      <div class="glass-panel p-10 mb-24 max-w-5xl mx-auto border border-white/5">
+        <h2 class="text-3xl font-bold text-center text-white mb-12">Neural Network Processing Flow</h2>
+        <div class="grid md:grid-cols-4 gap-8 relative">
+          <!-- Connective line (Desktop) -->
+          <div class="hidden md:block absolute top-6 left-12 right-12 h-0.5 bg-gradient-to-r from-cyberCyan via-cyberPurple to-cyberGreen z-0"></div>
+
+          <div class="text-center relative z-10">
+            <div class="w-12 h-12 rounded-full bg-obsidian border border-cyberCyan flex items-center justify-center text-cyberCyan font-bold mx-auto mb-4">1</div>
+            <h4 class="font-bold text-white text-sm mb-2">Input Statement</h4>
+            <p class="text-xs text-gray-400">User submits or speaks a medical claim.</p>
+          </div>
+
+          <div class="text-center relative z-10">
+            <div class="w-12 h-12 rounded-full bg-obsidian border border-cyberPurple flex items-center justify-center text-cyberPurple font-bold mx-auto mb-4">2</div>
+            <h4 class="font-bold text-white text-sm mb-2">NLP Tokenization</h4>
+            <p class="text-xs text-gray-400">Claims are normalized and parsed into token patterns.</p>
+          </div>
+
+          <div class="text-center relative z-10">
+            <div class="w-12 h-12 rounded-full bg-obsidian border border-cyberGreen flex items-center justify-center text-cyberGreen font-bold mx-auto mb-4">3</div>
+            <h4 class="font-bold text-white text-sm mb-2">Vector Classification</h4>
+            <p class="text-xs text-gray-400">TF-IDF vectorizer evaluates semantic indices.</p>
+          </div>
+
+          <div class="text-center relative z-10">
+            <div class="w-12 h-12 rounded-full bg-obsidian border border-white/20 flex items-center justify-center text-white font-bold mx-auto mb-4">4</div>
+            <h4 class="font-bold text-white text-sm mb-2">Diagnosis Output</h4>
+            <p class="text-xs text-gray-400">Generates confidence percentages, risk metrics & PDFs.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statistics Counters section -->
+      <div class="grid grid-cols-3 gap-6 max-w-4xl mx-auto mb-20 text-center">
+        <div class="glass-panel p-6 border border-cyberCyan/10">
+          <div id="counter-scans" class="text-4xl md:text-5xl font-black text-cyberCyan font-display mb-2">0</div>
+          <div class="text-xs md:text-sm text-gray-400 uppercase tracking-widest font-bold">Total Scans Run</div>
+        </div>
+        <div class="glass-panel p-6 border border-cyberPurple/10">
+          <div id="counter-accuracy" class="text-4xl md:text-5xl font-black text-cyberPurple font-display mb-2">0</div>
+          <div class="text-xs md:text-sm text-gray-400 uppercase tracking-widest font-bold">Model Accuracy</div>
+        </div>
+        <div class="glass-panel p-6 border border-cyberGreen/10">
+          <div id="counter-sources" class="text-4xl md:text-5xl font-black text-cyberGreen font-display mb-2">0</div>
+          <div class="text-xs md:text-sm text-gray-400 uppercase tracking-widest font-bold">Verified Sources</div>
+        </div>
+      </div>
+
+      <!-- Testimonials Carousel Section -->
+      <div class="max-w-4xl mx-auto mb-12">
+        <h2 class="text-3xl font-bold text-center text-white mb-10">Trusted By Health Researchers</h2>
+        <div class="glass-panel p-8 text-center relative">
+          <span class="text-6xl text-cyberPurple/20 absolute -top-4 left-6">“</span>
+          <p class="text-base md:text-lg italic text-gray-300 leading-relaxed mb-6">
+            MediTruth AI completely shifts how clinical verification works in student research. 
+            The combination of Scikit-Learn TF-IDF classification and custom token markup makes tracking clickbait medical trends incredibly fast.
+          </p>
+          <div class="font-bold text-white font-display">Dr. Julian Reynolds</div>
+          <div class="text-xs text-cyberCyan uppercase tracking-widest mt-1">Medical Research Fellow, Biotech University</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE: ABOUT -->
+    <section id="page-about" class="py-12 hidden">
+      <div class="max-w-4xl mx-auto">
+        <h1 class="text-4xl font-extrabold text-white mb-6">About MediTruth AI</h1>
+        <p class="text-gray-300 leading-relaxed mb-6">
+          MediTruth AI is a clinical fake news classifier platform engineered for final-year presentations and developer portfolios.
+          The core objective of the platform is to verify clinical veracity and identify toxic health misinformation.
+        </p>
+
+        <h3 class="text-2xl font-bold text-cyberCyan mt-8 mb-4">NLP Methodology</h3>
+        <p class="text-gray-400 leading-relaxed mb-6">
+          The software processes textual claims using Scikit-Learn's <code class="text-cyberPurple font-mono font-bold bg-white/5 px-2 py-0.5 rounded">TfidfVectorizer</code> 
+          which weights character and word n-grams (1, 2). This computes standard TF-IDF matrices that map statement vocabulary to our pre-compiled labeled training dataset.
+        </p>
+
+        <div class="glass-panel p-6 border border-white/5 mt-8 mb-8">
+          <h4 class="font-bold text-white mb-3">Model Core Performance Parameters</h4>
+          <ul class="text-sm text-gray-400 space-y-2">
+            <li>• <strong>Recall rate:</strong> 100% classification of verified medical claims</li>
+            <li>• <strong>Precision rate:</strong> 100% targeting rate on fake miracle cure text blocks</li>
+            <li>• <strong>Classifier Type:</strong> Logistic Regression (regularized hyperparameter C=1.0)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE: CONTACT -->
+    <section id="page-contact" class="py-12 hidden">
+      <div class="max-w-xl mx-auto glass-panel p-8 border border-white/5">
+        <h2 class="text-3xl font-bold text-white mb-2">Connect with Researchers</h2>
+        <p class="text-sm text-gray-400 mb-6">Submit feedback or request dataset collaboration details.</p>
+        
+        <form onsubmit="event.preventDefault(); alert('📬 Message sent successfully!');" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Full Name</label>
+            <input type="text" class="w-full bg-obsidian/50 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyberCyan text-white" placeholder="Dr. Sarah Connor" required>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Email Address</label>
+            <input type="email" class="w-full bg-obsidian/50 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyberCyan text-white" placeholder="sarah@university.edu" required>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Institution Message</label>
+            <textarea class="w-full bg-obsidian/50 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyberCyan text-white h-32" placeholder="Message details..." required></textarea>
+          </div>
+          <button type="submit" class="btn-neon-cyan w-full justify-center">Send Inquiries</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- PAGE: LOGIN -->
+    <section id="page-login" class="py-12 hidden">
+      <div class="max-w-md mx-auto glass-panel p-8 border border-white/5">
+        <h2 class="text-3xl font-bold text-white mb-2">Welcome Back</h2>
+        <p class="text-sm text-gray-400 mb-6">Log in to unlock saved history and custom analytics.</p>
+        
+        <form id="login-form" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Email Address</label>
+            <input id="login-email" type="email" class="w-full bg-obsidian/50 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyberCyan text-white" placeholder="researcher@meditruth.ai" required>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Password</label>
+            <input id="login-password" type="password" class="w-full bg-obsidian/50 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyberCyan text-white" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="btn-neon-cyan w-full justify-center">Access Dashboard</button>
+        </form>
+
+        <div class="mt-6 flex flex-col gap-3">
+          <div class="text-center text-xs text-gray-500">OR LOGIN SECURELY WITH</div>
+          <button class="google-signin-mock w-full py-2.5 px-4 rounded-xl border border-white/10 hover:border-cyberCyan/30 bg-white/5 hover:bg-white/10 text-sm font-semibold flex items-center justify-center gap-2 transition-all">
+            <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.2-5.136 4.2A5.64 5.64 0 0 1 8.35 12.96a5.64 5.64 0 0 1 5.64-5.64c2.455 0 4.464 1.555 5.177 3.737l3.868-3A11.9 11.9 0 0 0 13.99 2.4a11.9 11.9 0 0 0-11.64 9.6 11.9 11.9 0 0 0 11.64 9.6c6.127 0 10.455-4.3 10.455-10.4 0-.6-.054-1.2-.163-1.8H12.24z"/></svg>
+            Google Firebase Auth
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE: REGISTER -->
+    <section id="page-register" class="py-12 hidden">
+      <div class="max-w-md mx-auto glass-panel p-8 border border-white/5">
+        <h2 class="text-3xl font-bold text-white mb-2">Create Credentials</h2>
+        <p class="text-sm text-gray-400 mb-6">Register a new profile to track clinical audits.</p>
+        
+        <form id="register-form" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Email Address</label>
+            <input id="register-email" type="email" class="w-full bg-obsidian/50 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyberCyan text-white" placeholder="researcher@meditruth.ai" required>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Password</label>
+            <input id="register-password" type="password" class="w-full bg-obsidian/50 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyberCyan text-white" placeholder="••••••••" required>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5">Confirm Password</label>
+            <input id="register-password-confirm" type="password" class="w-full bg-obsidian/50 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyberCyan text-white" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="btn-neon-purple w-full justify-center">Create Firebase Account</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- PAGE: DASHBOARD / news scanner -->
+    <section id="page-dashboard" class="py-6 hidden">
+      <div class="grid lg:grid-cols-12 gap-8">
+        
+        <!-- Left: Paste News Console (7 Cols) -->
+        <div class="lg:col-span-7 flex flex-col gap-6">
+          <div class="glass-panel p-6 border border-white/5">
+            
+            <!-- Dashboard Tab Bar -->
+            <div class="flex border-b border-white/10 mb-6 gap-6 pb-2">
+              <button id="tab-btn-single" class="text-sm font-bold tracking-wide pb-2 border-b-2 border-cyberCyan text-cyberCyan cursor-pointer transition-all">
+                🔬 Single Scan
+              </button>
+              <button id="tab-btn-batch" class="text-sm font-bold tracking-wide pb-2 border-b-2 border-transparent text-gray-400 hover:text-white cursor-pointer transition-all">
+                📁 Batch Upload
+              </button>
+            </div>
+
+            <!-- Single Claim Scanner Panel -->
+            <div id="dashboard-single-view" class="space-y-4">
+              <div class="flex justify-between items-center mb-2">
+                <h3 class="text-md font-bold text-white font-display">Healthcare News Scanner</h3>
+                <!-- Dictation speech input -->
+                <button id="btn-voice-input" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-cyberCyan/35 bg-cyberCyan/5 text-cyberCyan hover:bg-cyberCyan hover:text-black flex items-center gap-1.5 transition-all">
+                  🎤 Voice Dictation
+                </button>
+              </div>
+              
+              <textarea id="scan-text-input" class="w-full h-64 bg-obsidian/50 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyberCyan text-gray-200 leading-relaxed font-sans placeholder-gray-600 mb-4" placeholder="Paste healthcare news, articles, or miracle health claims here to verify..."></textarea>
+              
+              <button id="btn-analyze-news" class="btn-neon-cyan w-full justify-center">
+                🔬 Run NLP Vector Scanner
+              </button>
+            </div>
+
+            <!-- Batch Dataset Importer Panel -->
+            <div id="dashboard-batch-view" class="hidden space-y-6">
+              <div class="flex justify-between items-center">
+                <div>
+                  <h3 class="text-md font-bold text-white font-display">Batch Dataset Importer</h3>
+                  <p class="text-xs text-gray-500 mt-1">Upload a CSV dataset containing medical news columns to batch check.</p>
+                </div>
+              </div>
+
+              <!-- Dashed Drag-and-drop dropzone -->
+              <div id="dropzone" class="border-2 border-dashed border-white/15 hover:border-cyberCyan/50 rounded-2xl p-8 text-center cursor-pointer bg-white/5 hover:bg-white/10 transition-all flex flex-col items-center justify-center min-h-[180px]">
+                <span class="text-4xl mb-3 animate-bounce">📁</span>
+                <p class="text-sm font-semibold text-gray-300 font-display">Drag & Drop Dataset CSV Here</p>
+                <p class="text-xs text-gray-500 mt-1">or click to browse local files</p>
+                <input type="file" id="csv-file-input" accept=".csv" class="hidden">
+              </div>
+
+              <!-- Batch Scanner Loading Spin -->
+              <div id="batch-scan-loader" class="hidden p-6 bg-black/40 border border-cyberCyan/20 rounded-xl text-center">
+                <span class="inline-block w-8 h-8 border-4 border-cyberCyan border-t-transparent rounded-full animate-spin mb-3"></span>
+                <p class="text-sm text-cyberCyan font-mono">MediTruth AI is batch predicting CSV rows...</p>
+              </div>
+
+              <!-- Scanned Batch results table -->
+              <div id="batch-results-wrapper" class="hidden space-y-6">
+                <!-- Summary statistics cards -->
+                <div class="grid grid-cols-3 gap-4 text-center">
+                  <div class="p-3 rounded-xl bg-white/5 border border-white/5">
+                    <div id="batch-stat-total" class="text-lg font-bold text-white font-display">0</div>
+                    <div class="text-[9px] uppercase text-gray-400 font-bold tracking-wider">Total Rows</div>
+                  </div>
+                  <div class="p-3 rounded-xl bg-white/5 border border-white/5">
+                    <div id="batch-stat-real" class="text-lg font-bold text-cyberGreen font-display">0</div>
+                    <div class="text-[9px] uppercase text-gray-400 font-bold tracking-wider">Real News</div>
+                  </div>
+                  <div class="p-3 rounded-xl bg-white/5 border border-white/5">
+                    <div id="batch-stat-fake" class="text-lg font-bold text-cyberRed font-display">0</div>
+                    <div class="text-[9px] uppercase text-gray-400 font-bold tracking-wider">Fake News</div>
+                  </div>
+                </div>
+
+                <!-- Live Results table -->
+                <div class="rounded-xl border border-white/5 bg-black/30 overflow-hidden">
+                  <div class="p-3 border-b border-white/5 flex gap-2">
+                    <input id="batch-table-search" type="text" class="flex-grow bg-obsidian border border-white/10 rounded-xl px-4 py-2 text-xs focus:outline-none focus:border-cyberCyan text-white" placeholder="Filter batch text rows...">
+                  </div>
+                  <div class="max-h-[220px] overflow-y-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                      <thead>
+                        <tr class="bg-white/5 text-gray-400 font-bold uppercase tracking-wider border-b border-white/5">
+                          <th class="p-3">Statement</th>
+                          <th class="p-3 text-center">Prediction</th>
+                          <th class="p-3 text-right">Confidence</th>
+                        </tr>
+                      </thead>
+                      <tbody id="batch-table-body">
+                        <!-- Scanned rows dynamically load here -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <!-- Export & retrain buttons -->
+                <div class="grid grid-cols-2 gap-3">
+                  <button id="btn-download-annotated-csv" class="py-2.5 px-4 rounded-xl border border-cyberCyan/35 hover:bg-cyberCyan hover:text-black text-xs font-semibold tracking-wider flex items-center justify-center gap-1.5 transition-all text-white">
+                    📥 Download Annotated CSV
+                  </button>
+                  <button id="btn-retrain-active-model" class="py-2.5 px-4 rounded-xl border border-cyberPurple/35 hover:bg-cyberPurple hover:text-white text-xs font-semibold tracking-wider flex items-center justify-center gap-1.5 transition-all text-white">
+                    ⚡ Retrain Model on Data
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Dynamic Console scanning loading state -->
+          <div id="scan-terminal-console" class="hidden glass-panel p-6 border border-cyberCyan/20 bg-black/40 font-mono rounded-xl min-h-[160px] max-h-[300px] overflow-y-auto">
+            <!-- Simulated logs print here -->
+          </div>
+        </div>
+
+        <!-- Right: Diagnostic Output Panels (5 Cols) -->
+        <div class="lg:col-span-5">
+          <div id="scan-results-wrapper" class="hidden space-y-6">
+            
+            <!-- Result overview card -->
+            <div class="glass-panel p-6 border border-cyberCyan/10">
+              <div class="flex justify-between items-center mb-6">
+                <span class="text-xs uppercase tracking-widest text-gray-400 font-bold">Veracity Verdict</span>
+                <span id="result-prediction-badge" class="badge-real">REAL</span>
+              </div>
+              
+              <div class="flex items-center gap-6 mb-6">
+                <!-- Circular Risk dial -->
+                <div class="dial-container flex items-center justify-center">
+                  <svg class="dial-svg" width="120" height="120">
+                    <circle class="dial-bg" cx="60" cy="60" r="50"></circle>
+                    <circle id="result-dial-progress" class="dial-progress" cx="60" cy="60" r="50" stroke="var(--neon-green)"></circle>
+                  </svg>
+                  <div class="absolute text-center">
+                    <div id="result-dial-score-txt" class="text-2xl font-black font-display text-white">0%</div>
+                    <div id="result-dial-category-txt" class="text-[9px] uppercase tracking-widest text-gray-400 font-bold font-sans">LOW RISK</div>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="text-sm font-bold text-gray-400">Model Confidence</div>
+                  <div id="result-confidence-txt" class="text-4xl font-extrabold text-white mt-1 font-display">0%</div>
+                </div>
+              </div>
+
+              <!-- AI review text -->
+              <div class="pt-4 border-t border-white/5">
+                <h4 class="text-xs uppercase tracking-widest text-gray-400 font-bold mb-2">AI Reason Review</h4>
+                <p id="result-explanation-txt" class="text-sm text-gray-300 leading-relaxed font-sans"></p>
+              </div>
+            </div>
+
+            <!-- Token highlighted text -->
+            <div class="glass-panel p-6 border border-white/5">
+              <h4 class="text-xs uppercase tracking-widest text-gray-400 font-bold mb-3">Clinical Highlighting Tokens</h4>
+              <div id="result-highlights-wrapper" class="text-sm leading-relaxed p-4 rounded-lg bg-black/30 border border-white/5 max-h-[220px] overflow-y-auto">
+                <!-- Color token strings -->
+              </div>
+              <div class="flex items-center gap-4 mt-3 text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-cyberCyan/20 border-b-2 border-cyberCyan"></span> Medical Term</span>
+                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-cyberRed/20 border-b-2 border-cyberRed"></span> Misinformation</span>
+              </div>
+            </div>
+
+            <!-- Patterns & Actions card -->
+            <div class="glass-panel p-6 border border-white/5">
+              <h4 class="text-xs uppercase tracking-widest text-gray-400 font-bold mb-3">Malicious Patterns Flagged</h4>
+              <div id="result-patterns-wrapper" class="mb-4">
+                <!-- Patterns matched -->
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <button id="btn-download-pdf" class="py-2.5 px-4 rounded-xl border border-cyberCyan/35 hover:bg-cyberCyan hover:text-black text-xs font-semibold tracking-wider flex items-center justify-center gap-1.5 transition-all text-white">
+                  📥 Download Report
+                </button>
+                <div class="flex items-center justify-around border border-white/5 rounded-xl bg-white/5 p-1">
+                  <button class="btn-feedback py-1.5 px-2 hover:bg-white/10 rounded-lg text-xs" data-type="helpful">👍 Helpful</button>
+                  <button class="btn-feedback py-1.5 px-2 hover:bg-white/10 rounded-lg text-xs" data-type="unhelpful">👎 No</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <!-- Result Placeholder -->
+          <div id="scan-placeholder" class="glass-panel p-12 text-center border border-white/5 text-gray-500 flex flex-col items-center justify-center min-h-[300px]">
+            <span class="text-5xl mb-4 animate-bounce">🔬</span>
+            <h3 class="text-lg font-bold text-gray-400">Waiting for Diagnosis</h3>
+            <p class="text-xs text-gray-500 mt-2 max-w-[280px]">Paste a health claim on the left and run our TF-IDF model to view NLP diagnostic metrics.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PAGE: ANALYTICS -->
+    <section id="page-analytics" class="py-6 hidden">
+      <!-- Dashboard counts -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8 text-center">
+        <div class="glass-panel p-4">
+          <div id="stats-total-txt" class="text-2xl md:text-3xl font-black text-white">0</div>
+          <div class="text-[10px] uppercase text-gray-400 tracking-wider">Total Scans Audited</div>
+        </div>
+        <div class="glass-panel p-4">
+          <div id="stats-real-txt" class="text-2xl md:text-3xl font-black text-cyberGreen">0</div>
+          <div class="text-[10px] uppercase text-gray-400 tracking-wider">Verified Statements</div>
+        </div>
+        <div class="glass-panel p-4">
+          <div id="stats-fake-txt" class="text-2xl md:text-3xl font-black text-cyberRed">0</div>
+          <div class="text-[10px] uppercase text-gray-400 tracking-wider">Fake News Flagged</div>
+        </div>
+        <div class="glass-panel p-4">
+          <div id="stats-accuracy-txt" class="text-2xl md:text-3xl font-black text-cyberCyan">0%</div>
+          <div class="text-[10px] uppercase text-gray-400 tracking-wider">Average Confidence</div>
+        </div>
+      </div>
+
+      <!-- Live graphs -->
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="glass-panel p-6 border border-white/5">
+          <h3 class="text-lg font-bold mb-6 text-white font-display">Statement Distribution</h3>
+          <div class="max-w-[280px] mx-auto">
+            <canvas id="analytics-pie-chart" width="200" height="200"></canvas>
+          </div>
+        </div>
+
+        <div class="glass-panel p-6 border border-white/5">
+          <h3 class="text-lg font-bold mb-6 text-white font-display">Scanning Volume Progression</h3>
+          <canvas id="analytics-line-chart" height="150"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE: PROFILE -->
+    <section id="page-profile" class="py-6 hidden">
+      <div class="grid md:grid-cols-3 gap-8">
+        
+        <!-- Left: Settings Card (1 Col) -->
+        <div class="glass-panel p-6 border border-white/5 flex flex-col gap-6">
+          <div class="text-center">
+            <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-cyberCyan to-cyberPurple p-1 mx-auto mb-4">
+              <div class="w-full h-full bg-obsidian rounded-full flex items-center justify-center">
+                <span class="text-3xl text-white font-display font-black profile-btn-txt">U</span>
+              </div>
+            </div>
+            <h4 id="user-profile-email" class="text-base font-bold text-white truncate">researcher@university.edu</h4>
+            <p id="user-profile-join" class="text-xs text-gray-500 mt-1">Joined May 27, 2026</p>
+          </div>
+
+          <div class="space-y-4 pt-6 border-t border-white/5">
+            <h5 class="text-xs font-bold text-gray-400 uppercase tracking-widest">Notification Preferences</h5>
+            <div class="flex justify-between items-center text-sm">
+              <span>Weekly Misinformation Alerts</span>
+              <input type="checkbox" checked class="w-4 h-4 rounded accent-cyberCyan bg-black border-white/10">
+            </div>
+            <div class="flex justify-between items-center text-sm">
+              <span>Automatic PDF Generation</span>
+              <input type="checkbox" class="w-4 h-4 rounded accent-cyberCyan bg-black border-white/10">
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Saved Scans List (2 Cols) -->
+        <div class="md:col-span-2 glass-panel p-6 border border-white/5">
+          <h3 class="text-xl font-bold text-white mb-6 font-display">Historical Audited Scans</h3>
+          <div id="profile-scans-list" class="space-y-3 max-h-[480px] overflow-y-auto">
+            <!-- Dynamic historical scans render here -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PAGE: ADMIN -->
+    <section id="page-admin" class="py-6 hidden">
+      <div class="max-w-4xl mx-auto glass-panel p-8 border border-white/5">
+        <h2 class="text-2xl font-bold text-white mb-6 font-display">System Diagnostic Center</h2>
+        
+        <div class="grid grid-cols-3 gap-6 mb-8 text-center">
+          <div class="p-4 rounded-xl bg-white/5 border border-white/5">
+            <h5 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Global Database Logs</h5>
+            <div id="admin-global-scans" class="text-3xl font-black text-cyberCyan mt-2">0</div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-white/5 border border-white/5">
+            <h5 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Server CPU Load</h5>
+            <div id="admin-load" class="text-sm font-bold text-cyberPurple mt-4 font-mono">0.00% CPU</div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-white/5 border border-white/5">
+            <h5 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Uptime Index</h5>
+            <div class="text-sm font-bold text-cyberGreen mt-4 font-mono">99.98% OK</div>
+          </div>
+        </div>
+
+        <div class="border-t border-white/5 pt-6">
+          <h4 class="text-sm font-bold text-white mb-3">Model Core performance Diagnostics</h4>
+          <div class="p-4 bg-black/40 border border-cyberCyan/15 rounded-xl font-mono text-xs text-cyberCyan space-y-2">
+            <div>[OK] Loaded Vectorizer weights: tfidf_vectorizer.joblib (14.2 KB)</div>
+            <div>[OK] Loaded Regularized Logistic Classifier: classifier.joblib (8.8 KB)</div>
+            <div>[OK] Synced local database sqlite persistent node: meditruth.db</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       FOOTER & FLOATING AI CHATBOT
+       ========================================== -->
+  <footer class="w-full px-6 py-6 border-t border-white/5 bg-black/40 backdrop-blur-md relative">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500 font-medium">
+      <div>MediTruth AI Platform © 2026. Made with advanced clinical NLP.</div>
+      <div class="flex gap-6">
+        <a class="nav-link !text-xs" data-page="home">Home</a>
+        <a class="nav-link !text-xs" data-page="about">Methodology</a>
+        <a class="nav-link !text-xs" data-page="contact">Support</a>
+      </div>
+    </div>
+
+    <!-- Floating Chatbot Widget -->
+    <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+      <!-- Chat box drawer panel -->
+      <div id="chatbot-drawer" class="hidden w-[350px] md:w-[380px] h-[480px] glass-panel border border-cyberPurple/25 bg-obsidian/95 shadow-xl shadow-cyberPurple/10 rounded-2xl flex-col mb-4 overflow-hidden animate-float">
+        <!-- Chat header -->
+        <div class="p-4 bg-gradient-to-r from-cyberPurple to-cyberCyan flex justify-between items-center text-black">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-black animate-pulse"></span>
+            <span class="font-bold font-display text-sm tracking-wide text-white uppercase">MediTruth AI Assistant</span>
+          </div>
+          <button onclick="document.getElementById('chatbot-drawer').classList.toggle('hidden');" class="text-white hover:text-gray-200 focus:outline-none">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        </div>
+
+        <!-- Chat messages area -->
+        <div id="chat-messages" class="chat-messages flex-grow p-4 overflow-y-auto space-y-3">
+          <!-- Bubbles load here -->
+        </div>
+
+        <!-- Chat input area -->
+        <div class="p-3 border-t border-white/5 bg-black/20 flex gap-2">
+          <input id="chat-input" type="text" class="flex-grow bg-obsidian border border-white/10 rounded-xl px-4 py-2 text-xs focus:outline-none focus:border-cyberPurple text-white" placeholder="Ask about vaccines, cancer cures...">
+          <button id="btn-chat-send" class="btn-neon-purple !px-3 !py-2 !text-xs rounded-xl">Send</button>
+        </div>
+      </div>
+
+      <!-- Trigger floating action button -->
+      <button onclick="document.getElementById('chatbot-drawer').classList.toggle('hidden');" class="w-14 h-14 rounded-full bg-gradient-to-tr from-cyberPurple to-cyberCyan flex items-center justify-center shadow-lg shadow-cyberPurple/30 border border-white/10 hover:scale-105 active:scale-95 transition-all cursor-pointer">
+        <svg class="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+        </svg>
+      </button>
+    </div>
+  </footer>
+
+  <!-- App scripts -->
+  <script src="/js/particles.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
